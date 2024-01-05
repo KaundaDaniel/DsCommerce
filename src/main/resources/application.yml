@@ -1,0 +1,8 @@
+
+
+# Profile using
+spring:
+  profiles:
+    active: test
+  jpa:
+    open-in-view: false
