@@ -3,10 +3,12 @@ package com.kaunda.dsCommerce.services;
 import com.kaunda.dsCommerce.dto.ProductDTO;
 import com.kaunda.dsCommerce.entities.Product;
 import com.kaunda.dsCommerce.repository.ProductRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import java.util.List;
 
 @Component
 public class ProductService {
@@ -20,5 +22,10 @@ public class ProductService {
         return  new ProductDTO(product);
 
 
+    }
+    @Transactional(readOnly = true)
+    public Page<ProductDTO> findAll(Pageable pageable){
+        Page<Product> productList=productRepository.findAll(pageable);
+        return productList.map(ProductDTO::new);
     }
 }
