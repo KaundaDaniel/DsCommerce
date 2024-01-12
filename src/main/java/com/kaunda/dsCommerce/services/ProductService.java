@@ -3,9 +3,14 @@ package com.kaunda.dsCommerce.services;
 import com.kaunda.dsCommerce.dto.ProductDTO;
 import com.kaunda.dsCommerce.entities.Product;
 import com.kaunda.dsCommerce.repository.ProductRepository;
+import com.kaunda.dsCommerce.services.exceptions.DatabaseException;
+import com.kaunda.dsCommerce.services.exceptions.ResourceNotFoundException;
+import jakarta.persistence.EntityNotFoundException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -18,7 +23,8 @@ public class ProductService {
     }
     @Transactional(readOnly = true)
     public ProductDTO findById(Long id){
-        var product=productRepository.findById(id).get();
+        var product=productRepository.findById(id)
+                .orElseThrow(()-> new ResourceNotFoundException("Recurso não encontrado!"));
         return  new ProductDTO(product);
     }
     @Transactional(readOnly = true)
@@ -38,10 +44,14 @@ public class ProductService {
 
     @Transactional
     public ProductDTO update( Long id, ProductDTO dto){
-        var product= productRepository.getReferenceById(id);
-       copyDToToEntity(dto, product);
-        product = productRepository.save(product);
-        return  new ProductDTO(product);
+      try{
+          var product= productRepository.getReferenceById(id);
+          copyDToToEntity(dto, product);
+          product = productRepository.save(product);
+          return  new ProductDTO(product);
+      }catch (EntityNotFoundException e){
+          throw new ResourceNotFoundException("Recurso não encontrado!");
+      }
 
     }
     private void copyDToToEntity(ProductDTO productDTO, Product product){
@@ -52,9 +62,16 @@ public class ProductService {
 
     }
 
-    @Transactional
-    public void delete(Long id){
-       productRepository.deleteById(id);
-
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public void delete(Long id) {
+        if (!productRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Recurso não encontrado");
+        }
+        try {
+            productRepository.deleteById(id);
+        }
+        catch (DataIntegrityViolationException e) {
+            throw new DatabaseException("Falha de integridade referencial");
+        }
     }
 }

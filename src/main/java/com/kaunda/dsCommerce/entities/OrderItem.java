@@ -8,10 +8,10 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
-@Table(name = "order_item")
+@Table(name = "tb_order_item")
 public class OrderItem implements Serializable {
     @EmbeddedId
-    private OrderItemPk id= new OrderItemPk();
+  private OrderItemPK id= new OrderItemPK();
     private Integer quantity;
     private Double price;
 

@@ -10,6 +10,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "tb_user")
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,7 +26,6 @@ public class User {
     private List<Order> orders = new ArrayList<>();
 
     public User() {
-
     }
 
     public User(Long id, String name, String email, String phone, LocalDate birthDate, String password) {

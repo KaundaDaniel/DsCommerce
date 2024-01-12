@@ -4,10 +4,11 @@ import jakarta.persistence.Embeddable;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 @Embeddable
-public class OrderItemPk {
+public class OrderItemPK implements Serializable {
     @ManyToOne
     @JoinColumn(name = "order_id")
     private Order order;
@@ -15,12 +16,7 @@ public class OrderItemPk {
     @JoinColumn(name = "product_id")
     private Product product;
 
-    public OrderItemPk() {
-    }
-
-    public OrderItemPk(Order order, Product product) {
-        this.order = order;
-        this.product = product;
+    public OrderItemPK() {
     }
 
     public Order getOrder() {
@@ -44,7 +40,7 @@ public class OrderItemPk {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        OrderItemPk that = (OrderItemPk) o;
+        OrderItemPK that = (OrderItemPK) o;
 
         if (!Objects.equals(order, that.order)) return false;
         return Objects.equals(product, that.product);
