@@ -1,11 +1,17 @@
 package com.kaunda.dsCommerce.dto;
 
 import com.kaunda.dsCommerce.entities.Product;
+import jakarta.validation.constraints.*;
 
 public class ProductDTO {
     private Long id;
+
+    @NotBlank(message = "Campo nome Obrigatório")
+    @Size(min = 3, max = 80, message = "O nome Precisa ter entre 3 e 80 caracteres")
     private String name;
+    @Size(min = 10, message = "Precisa  de ter no minimo 10 caracteres")
     private String description;
+    @Positive(message = "Não pode ter valores negativos")
     private Double price;
     private String imgUrl;
 
